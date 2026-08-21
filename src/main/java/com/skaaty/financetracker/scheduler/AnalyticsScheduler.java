@@ -7,7 +7,6 @@ import com.skaaty.financetracker.model.User;
 import com.skaaty.financetracker.repository.MonthlySummaryRepository;
 import com.skaaty.financetracker.repository.TransactionRepository;
 import com.skaaty.financetracker.repository.UserRepository;
-import com.skaaty.financetracker.service.TransactionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
