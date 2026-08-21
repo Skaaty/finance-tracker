@@ -28,7 +28,7 @@ public class TransactionController {
         return ResponseEntity.ok(transactions);
     }
 
-    @PostMapping("/upload")
+    @PostMapping(value = "/upload", consumes = "multipart/form-data")
     public ResponseEntity<String> uploadCsv(
             @RequestParam("file") org.springframework.web.multipart.MultipartFile file,
             @RequestParam("userId") Long userId,
