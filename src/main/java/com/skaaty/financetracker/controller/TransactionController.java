@@ -1,5 +1,6 @@
 package com.skaaty.financetracker.controller;
 
+import com.skaaty.financetracker.dto.TransactionRequest;
 import com.skaaty.financetracker.model.Category;
 import com.skaaty.financetracker.model.User;
 import com.skaaty.financetracker.model.Transaction;
@@ -7,6 +8,7 @@ import com.skaaty.financetracker.service.TransactionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -17,8 +19,8 @@ public class TransactionController {
     private final TransactionService transactionService;
 
     @PostMapping
-    public ResponseEntity<Transaction> addTransaction(@RequestBody Transaction transaction) {
-        Transaction savedTransaction = transactionService.addTransaction(transaction);
+    public ResponseEntity<Transaction> addTransaction(@Valid @RequestBody TransactionRequest request) {
+        Transaction savedTransaction = transactionService.addTransaction(request);
         return ResponseEntity.ok(savedTransaction);
     }
 
