@@ -1,5 +1,7 @@
 package com.skaaty.financetracker.service;
 
+import com.skaaty.financetracker.dto.UserRegistrationRequest;
+import com.skaaty.financetracker.dto.UserResponse;
 import com.skaaty.financetracker.repository.UserRepository;
 import com.skaaty.financetracker.model.User;
 import org.junit.jupiter.api.Test;
@@ -22,14 +24,18 @@ public class UserServiceTest {
 
     @Test
     void shouldRegisterUserSuccessfully() {
-        User newUser = new User(null, "testuser", "test@test.com", "hash");
-        User savedUser = new User(1L, "testuser", "test@test.com", "hash");
+        UserRegistrationRequest request = new UserRegistrationRequest();
+        request.setUsername("testuser");
+        request.setEmail("test@test.com");
+        request.setRawPassword("hash");
 
+        User savedUser = new User(1L, "testuser", "test@test.com", "hash");
         when(userRepository.save(any(User.class))).thenReturn(savedUser);
 
-        User result = userService.registerUser(newUser);
+        UserResponse result = userService.registerUser(request);
 
         assertEquals(1L, result.getId());
         assertEquals("testuser", result.getUsername());
+        assertEquals("test@test.com", result.getEmail());
     }
 }
