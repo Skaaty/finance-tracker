@@ -30,7 +30,7 @@ public class TransactionRequest {
     @NotNull(message = "User ID is required")
     private Long userId;
 
-    @NotNull(message = "Transaction ID is required")
+    @NotNull(message = "Category ID is required")
     private Long categoryId;
 
 }
