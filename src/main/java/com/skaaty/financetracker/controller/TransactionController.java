@@ -1,9 +1,9 @@
 package com.skaaty.financetracker.controller;
 
-import com.skaaty.financetracker.dto.TransactionRequest;
+import com.skaaty.financetracker.dto.request.TransactionRequest;
+import com.skaaty.financetracker.dto.response.TransactionResponse;
 import com.skaaty.financetracker.model.Category;
 import com.skaaty.financetracker.model.User;
-import com.skaaty.financetracker.model.Transaction;
 import com.skaaty.financetracker.service.TransactionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,14 +19,14 @@ public class TransactionController {
     private final TransactionService transactionService;
 
     @PostMapping
-    public ResponseEntity<Transaction> addTransaction(@Valid @RequestBody TransactionRequest request) {
-        Transaction savedTransaction = transactionService.addTransaction(request);
-        return ResponseEntity.ok(savedTransaction);
+    public ResponseEntity<TransactionResponse> addTransaction(@Valid @RequestBody TransactionRequest request) {
+        TransactionResponse response = transactionService.addTransaction(request);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Transaction>> getUserTransactions(@PathVariable Long userId) {
-        List<Transaction> transactions = transactionService.getUserTransactions(userId);
+    public ResponseEntity<List<TransactionResponse>> getUserTransactions(@PathVariable Long userId) {
+        List<TransactionResponse> transactions = transactionService.getUserTransactions(userId);
         return ResponseEntity.ok(transactions);
     }
 

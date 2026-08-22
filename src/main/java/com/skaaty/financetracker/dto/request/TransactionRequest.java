@@ -1,4 +1,4 @@
-package com.skaaty.financetracker.dto;
+package com.skaaty.financetracker.dto.request;
 
 import com.skaaty.financetracker.model.TransactionType;
 import jakarta.validation.constraints.NotNull;

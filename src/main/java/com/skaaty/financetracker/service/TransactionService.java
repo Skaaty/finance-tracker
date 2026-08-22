@@ -1,6 +1,7 @@
 package com.skaaty.financetracker.service;
 
-import com.skaaty.financetracker.dto.TransactionRequest;
+import com.skaaty.financetracker.dto.request.TransactionRequest;
+import com.skaaty.financetracker.dto.response.TransactionResponse;
 import com.skaaty.financetracker.model.User;
 import com.skaaty.financetracker.model.Category;
 import com.skaaty.financetracker.model.Transaction;
@@ -22,7 +23,7 @@ public class TransactionService {
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
 
-    public Transaction addTransaction(TransactionRequest request) {
+    public TransactionResponse addTransaction(TransactionRequest request) {
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + request.getUserId()));
 
@@ -37,11 +38,28 @@ public class TransactionService {
         transaction.setUser(user);
         transaction.setCategory(category);
 
-        return transactionRepository.save(transaction);
+        Transaction savedTransaction = transactionRepository.save(transaction);
+
+        return mapToResponse(savedTransaction);
     }
 
-    public List<Transaction> getUserTransactions(Long userId) {
-        return transactionRepository.findByUserId(userId);
+    public List<TransactionResponse> getUserTransactions(Long userId) {
+        return transactionRepository.findByUserId(userId)
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+
+    private TransactionResponse mapToResponse(Transaction transaction) {
+        return TransactionResponse.builder()
+                .id(transaction.getId())
+                .amount(transaction.getAmount())
+                .date(transaction.getDate())
+                .description(transaction.getDescription())
+                .type(transaction.getType())
+                .userId(transaction.getUser().getId())
+                .categoryName(transaction.getCategory().getName())
+                .build();
     }
 
     public void importCsv(MultipartFile file, User user, Category defaultCategory) throws Exception {

@@ -1,7 +1,7 @@
 package com.skaaty.financetracker.service;
 
-import com.skaaty.financetracker.dto.UserRegistrationRequest;
-import com.skaaty.financetracker.dto.UserResponse;
+import com.skaaty.financetracker.dto.request.UserRegistrationRequest;
+import com.skaaty.financetracker.dto.response.UserResponse;
 import com.skaaty.financetracker.repository.UserRepository;
 import com.skaaty.financetracker.model.User;
 import org.junit.jupiter.api.Test;

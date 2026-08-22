@@ -1,4 +1,4 @@
-package com.skaaty.financetracker.dto;
+package com.skaaty.financetracker.dto.response;
 
 import lombok.Builder;
 import lombok.Data;

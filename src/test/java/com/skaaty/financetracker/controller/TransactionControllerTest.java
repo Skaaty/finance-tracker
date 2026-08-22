@@ -1,6 +1,6 @@
 package com.skaaty.financetracker.controller;
 
-import com.skaaty.financetracker.dto.TransactionRequest;
+import com.skaaty.financetracker.dto.request.TransactionRequest;
 import com.skaaty.financetracker.model.TransactionType;
 import com.skaaty.financetracker.service.TransactionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
