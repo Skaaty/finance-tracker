@@ -12,5 +12,16 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  jenkins:
+    image: jenkins/jenkins:lts-jdk17
+    container_name: finance-jenkins
+    restart: always
+    ports:
+      - "8081:8080" # Port 8081 avoids collision with Spring Boot on 8080
+      - "50000:50000"
+    volumes:
+      - jenkins_data:/var/jenkins_home
+
 volumes:
   postgres_data:
+  jenkins_data:
