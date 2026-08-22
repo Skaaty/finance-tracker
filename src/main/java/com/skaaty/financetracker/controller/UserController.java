@@ -1,5 +1,7 @@
 package com.skaaty.financetracker.controller;
 
+import com.skaaty.financetracker.dto.UserRegistrationRequest;
+import com.skaaty.financetracker.dto.UserResponse;
 import com.skaaty.financetracker.model.User;
 import com.skaaty.financetracker.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -12,10 +14,10 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final UserService userService;
 
-    @PostMapping
-    public ResponseEntity<User> registerUser(@RequestBody User user) {
-        User savedUser = userService.registerUser(user);
-        return ResponseEntity.ok(savedUser);
+    @PostMapping("/register")
+    public ResponseEntity<UserResponse> registerUser(@RequestBody UserRegistrationRequest request) {
+        UserResponse response = userService.registerUser(request);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{email}")
