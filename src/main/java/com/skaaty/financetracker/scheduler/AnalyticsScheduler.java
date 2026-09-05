@@ -24,7 +24,7 @@ public class AnalyticsScheduler {
     private final TransactionRepository transactionRepository;
     private final MonthlySummaryRepository monthlySummaryRepository;
 
-    @Scheduled(fixedRate = 30000)
+    @Scheduled(fixedRate = 300000)
     public void generateMonthlySummaries() {
         log.info("Starting automated summary generation...");
 
