@@ -5,6 +5,7 @@ import com.skaaty.financetracker.dto.response.UserResponse;
 import com.skaaty.financetracker.model.User;
 import com.skaaty.financetracker.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -13,13 +14,14 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public UserResponse registerUser(UserRegistrationRequest request) {
         // TODO: password hashing her
         User user = new User();
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
-        user.setPasswordHash(request.getRawPassword()); //add hashing later
+        user.setPasswordHash(passwordEncoder.encode(request.getRawPassword())); //add hashing later
 
         User savedUser = userRepository.save(user);
 
