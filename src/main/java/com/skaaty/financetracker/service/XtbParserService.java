@@ -42,6 +42,7 @@ public class XtbParserService {
         }
     }
 
+    @Transactional(readOnly = true)
     public PortfolioResponse getPortfolioByUserId(Long userId) {
         Portfolio portfolio = portfolioRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Portfolio not found for user id: " + userId));
