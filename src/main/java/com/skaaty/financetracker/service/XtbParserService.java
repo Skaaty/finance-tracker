@@ -43,8 +43,32 @@ public class XtbParserService {
                 continue;
             }
 
-            if (isDataRow && firstCell != null && !isCellEmpty(firstCell))
+            if (isDataRow && firstCell != null && !isCellEmpty(firstCell)) {
+                Cell amountCell = row.getCell(5);
+                BigDecimal amount = getBigDecimalFromCell(amountCell);
+
+                if (amount != null) {
+                    portfolio.setCashBalance(portfolio.getCashBalance().add(amount));
+                }
+            }
         }
+    }
+
+    private BigDecimal getBigDecimalFromCell(Cell cell) {
+        if (cell == null) return null;
+
+        if (cell.getCellType() == CellType.NUMERIC) {
+            return BigDecimal.valueOf(cell.getNumericCellValue());
+        } else if (cell.getCellType() == CellType.STRING) {
+            String val = cell.getStringCellValue().trim().replace(" ", "").replace(",", ".");
+            if (val.isEmpty()) return null;
+            try {
+                return new BigDecimal(val);
+            } catch (NumberFormatException e) {
+                return null;
+            }
+        }
+        return null;
     }
 
     private boolean isCellEmpty(Cell cell) {
