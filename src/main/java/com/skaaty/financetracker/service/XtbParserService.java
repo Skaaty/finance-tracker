@@ -54,6 +54,51 @@ public class XtbParserService {
         }
     }
 
+    private void processOpenPositions(Sheet sheet, Portfolio portfolio) {
+        boolean isDataRow = false;
+
+        for (Row row : sheet) {
+            Cell firstCell = row.getCell(0);
+            Cell tickerHeaderCell = row.getCell(2);
+
+            if (firstCell != null && firstCell.getCellType() == CellType.STRING &&
+                    firstCell.getStringCellValue().trim().equalsIgnoreCase("Product") &&
+                    tickerHeaderCell != null && tickerHeaderCell.getStringCellValue().trim().equalsIgnoreCase("Ticker")) {
+                isDataRow = true;
+                continue;
+            }
+
+            if (isDataRow) {
+                Cell tickerCell = row.getCell(2); // ticker
+
+                if (tickerCell != null && !isCellEmpty(tickerCell)) {
+                    String ticker = tickerCell.getStringCellValue().trim();
+
+                    Cell volumeCell = row.getCell(5);
+                    Cell priceCell = row.getCell(8);
+
+                    BigDecimal volume = getBigDecimalFromCell(volumeCell);
+                    BigDecimal openPrice = getBigDecimalFromCell(priceCell);
+
+                    if (volume != null && openPrice != null) {
+                        StockPosition position = stockPositionRepository
+                                .findByPortfolioIdAndTickerSymbol(portfolio.getId(), ticker)
+                                .orElse(StockPosition.builder()
+                                        .portfolio(portfolio)
+                                        .tickerSymbol(ticker)
+                                        .quantity(BigDecimal.ZERO)
+                                        .averageBuyPrice(BigDecimal.ZERO)
+                                        .build());
+
+                        position.setQuantity(volume);
+                        position.setAverageBuyPrice(openPrice);
+
+                        stockPositionRepository.save(position);
+                    }
+                }
+            }
+        }
+    }
     private BigDecimal getBigDecimalFromCell(Cell cell) {
         if (cell == null) return null;
 
