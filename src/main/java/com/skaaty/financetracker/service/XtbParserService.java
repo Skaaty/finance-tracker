@@ -1,5 +1,7 @@
 package com.skaaty.financetracker.service;
 
+import com.skaaty.financetracker.dto.response.PortfolioResponse;
+import com.skaaty.financetracker.dto.response.StockPositionResponse;
 import com.skaaty.financetracker.model.Portfolio;
 import com.skaaty.financetracker.model.StockPosition;
 import com.skaaty.financetracker.repository.PortfolioRepository;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +40,26 @@ public class XtbParserService {
 
             portfolioRepository.save(portfolio);
         }
+    }
+
+    public PortfolioResponse getPortfolioByUserId(Long userId) {
+        Portfolio portfolio = portfolioRepository.findByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Portfolio not found for user id: " + userId));
+
+        List<StockPositionResponse> positionResponses = stockPositionRepository.findByPortfolioId(portfolio.getId())
+                .stream()
+                .map(pos -> StockPositionResponse.builder()
+                        .tickerSymbol(pos.getTickerSymbol())
+                        .quantity(pos.getQuantity())
+                        .averageBuyPrice(pos.getAverageBuyPrice())
+                        .build())
+                .toList();
+
+        return PortfolioResponse.builder()
+                .id(portfolio.getId())
+                .cashBalance(portfolio.getCashBalance())
+                .positions(positionResponses)
+                .build();
     }
 
     private void processCashOperations(Sheet sheet, Portfolio portfolio) {
