@@ -6,7 +6,7 @@ import com.skaaty.financetracker.model.Portfolio;
 import com.skaaty.financetracker.model.StockPosition;
 import com.skaaty.financetracker.repository.PortfolioRepository;
 import com.skaaty.financetracker.repository.StockPositionRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.*;
 import org.springframework.stereotype.Service;
