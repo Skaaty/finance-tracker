@@ -20,4 +20,6 @@ public class User {
     private String email;
     @Column(nullable = false)
     private String passwordHash;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Portfolio portfolio;
 }
