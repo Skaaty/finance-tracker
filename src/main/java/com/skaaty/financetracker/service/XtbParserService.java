@@ -27,6 +27,8 @@ public class XtbParserService {
         Portfolio portfolio = portfolioRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Portfolio not found for user id: " + userId));
 
+        portfolio.setCashBalance(BigDecimal.ZERO);
+
         try (Workbook workbook = WorkbookFactory.create(file.getInputStream())) {
             Sheet cashSheet = getSheetByNameContains(workbook, "Cash", "Gotówk");
             if (cashSheet != null) {
@@ -76,6 +78,12 @@ public class XtbParserService {
             }
 
             if (isDataRow && firstCell != null && isCellEmpty(firstCell)) {
+
+                if (firstCell.getCellType() == CellType.STRING) {
+                    String rowType = firstCell.getStringCellValue().trim().toLowerCase();
+                    if (rowType.contains("total")) break;
+                }
+
                 Cell amountCell = row.getCell(5);
                 BigDecimal amount = getBigDecimalFromCell(amountCell);
 
