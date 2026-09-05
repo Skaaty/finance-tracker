@@ -33,5 +33,22 @@ public class XtbParserService {
 
     private void processCashOperations(Sheet sheet, Portfolio portfolio) {
         boolean isDataRow = false;
+
+        for (Row row : sheet) {
+            Cell firstCell = row.getCell(0);
+
+            if (firstCell != null && firstCell.getCellType() == CellType.STRING &&
+                firstCell.getStringCellValue().trim().equalsIgnoreCase("Type")) {
+                isDataRow = true;
+                continue;
+            }
+
+            if (isDataRow && firstCell != null && !isCellEmpty(firstCell))
+        }
+    }
+
+    private boolean isCellEmpty(Cell cell) {
+        return cell.getCellType() == CellType.BLANK ||
+                (cell.getCellType() == CellType.STRING && cell.getStringCellValue().trim().isEmpty());
     }
 }
