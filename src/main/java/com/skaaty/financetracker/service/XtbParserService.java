@@ -10,9 +10,6 @@ import org.apache.poi.ss.usermodel.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.sound.sampled.Port;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.math.BigDecimal;
 
 @Service
@@ -28,6 +25,17 @@ public class XtbParserService {
                 .orElseThrow(() -> new IllegalArgumentException("Portfolio not found for user id: " + userId));
 
         try (Workbook workbook = WorkbookFactory.create(file.getInputStream())) {
+            Sheet cashSheet = getSheetByNameContains(workbook, "Cash", "Gotówk");
+            if (cashSheet != null) {
+                processCashOperations(cashSheet, portfolio);
+            }
+
+            Sheet openPositionsSheet = getSheetByNameContains(workbook, "Open", "Otwarte");
+            if (openPositionsSheet != null) {
+                processOpenPositions(openPositionsSheet, portfolio);
+            }
+
+            portfolioRepository.save(portfolio);
         }
     }
 
@@ -43,7 +51,7 @@ public class XtbParserService {
                 continue;
             }
 
-            if (isDataRow && firstCell != null && !isCellEmpty(firstCell)) {
+            if (isDataRow && firstCell != null && isCellEmpty(firstCell)) {
                 Cell amountCell = row.getCell(5);
                 BigDecimal amount = getBigDecimalFromCell(amountCell);
 
@@ -71,7 +79,7 @@ public class XtbParserService {
             if (isDataRow) {
                 Cell tickerCell = row.getCell(2); // ticker
 
-                if (tickerCell != null && !isCellEmpty(tickerCell)) {
+                if (tickerCell != null && isCellEmpty(tickerCell)) {
                     String ticker = tickerCell.getStringCellValue().trim();
 
                     Cell volumeCell = row.getCell(5);
@@ -117,7 +125,19 @@ public class XtbParserService {
     }
 
     private boolean isCellEmpty(Cell cell) {
-        return cell.getCellType() == CellType.BLANK ||
-                (cell.getCellType() == CellType.STRING && cell.getStringCellValue().trim().isEmpty());
+        return cell.getCellType() != CellType.BLANK &&
+                (cell.getCellType() != CellType.STRING || !cell.getStringCellValue().trim().isEmpty());
+    }
+
+    private Sheet getSheetByNameContains(Workbook workbook, String... keywords) {
+        for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
+            String sheetName = workbook.getSheetName(i).toLowerCase();
+            for (String keyword : keywords) {
+                if (sheetName.contains(keyword.toLowerCase())) {
+                    return workbook.getSheetAt(i);
+                }
+            }
+        }
+        return null;
     }
 }
